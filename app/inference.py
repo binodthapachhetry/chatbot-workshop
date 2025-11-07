@@ -42,7 +42,17 @@ def build_prompt(user_message: str) -> str:
 
 def generate_reply(user_message: str) -> str:
     generator = get_generator()
-    prompt = build_prompt(user_message)
+    tokenizer = generator.tokenizer
+    messages = [
+        {
+            "role": "system",
+            "content": "You are a helpful, concise assistant. Keep answers short and easy to understand.",
+        },
+        {"role": "user", "content": user_message},
+    ]
+    prompt = tokenizer.apply_chat_template(
+        messages, tokenize=False, add_generation_prompt=True
+    )
 
     outputs = generator(
         prompt,
@@ -50,10 +60,8 @@ def generate_reply(user_message: str) -> str:
         do_sample=True,
         top_p=0.9,
         temperature=0.7,
+        eos_token_id=tokenizer.eos_token_id,
+        pad_token_id=tokenizer.eos_token_id,
+        return_full_text=False,
     )
-    full_text = outputs[0]["generated_text"]
-
-    split_token = "Assistant:"
-    if split_token in full_text:
-        return full_text.split(split_token, 1)[1].strip()
-    return full_text.strip()
+    return outputs[0]["generated_text"].strip()
