@@ -5,6 +5,10 @@ import datetime as dt
 
 import boto3
 
+from dotenv import load_dotenv
+# Load environment variables from .env file
+load_dotenv()
+
 S3_BUCKET_NAME = os.getenv("S3_BUCKET_NAME")
 _s3_client = boto3.client("s3")
 

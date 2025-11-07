@@ -2,6 +2,9 @@ import os
 from functools import lru_cache
 
 from transformers import AutoModelForCausalLM, AutoTokenizer, pipeline
+from dotenv import load_dotenv
+# Load environment variables from .env file
+load_dotenv()
 
 MODEL_ID = os.getenv("MODEL_ID", "TinyLlama/TinyLlama-1.1B-Chat-v1.0")
 

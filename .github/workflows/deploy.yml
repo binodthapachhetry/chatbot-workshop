@@ -1,0 +1,34 @@
+name: Deploy to EC2
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Add SSH key
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.EC2_SSH_KEY }}
+
+      - name: Deploy to EC2
+        run: |
+          ssh -o StrictHostKeyChecking=no ${{ secrets.EC2_HOST }} << 'EOF'
+          set -e
+
+          cd /opt/chatbot-workshop
+          git fetch origin main
+          git reset --hard origin/main
+
+          source /opt/chatbot-venv/bin/activate
+          pip install -r requirements.txt
+
+          sudo systemctl restart chatbot.service
+          sudo systemctl status chatbot.service --no-pager || true
+          EOF
