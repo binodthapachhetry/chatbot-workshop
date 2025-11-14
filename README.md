@@ -90,7 +90,7 @@ By the end of the workshop you will be able to:
 2. **Run the app**
 
    ```bash
-   uvicorn app.main:app --host 0.0.0.0 --port 8000
+   uvicorn app.main:app --host 0.0.0.0 --port 8080
    ```
 
 3. **Test in browser**
@@ -135,7 +135,7 @@ The facilitator will:
 
 The facilitator has already deployed this repo to a GPU EC2 instance and wired `systemd`.
 
-1. Visit: `http://<EC2_PUBLIC_IP>:8000` (provided in session)
+1. Visit: `http://<EC2_PUBLIC_IP>:8080` (provided in session)
 2. Ask questions → confirm it behaves like local
 3. Facilitator shows:
    - `journalctl -u chatbot.service` on EC2
@@ -189,7 +189,23 @@ On the EC2 instance (GPU) as root and/or `chatbot` user:
 sudo adduser chatbot
 sudo mkdir -p /opt/chatbot-workshop
 sudo chown -R chatbot:chatbot /opt/chatbot-workshop
+```
 
+```bash
+# Get uv for x10 package install speed
+curl -LsSf https://astral.sh/uv/install.sh | sh
+```
+
+```bash
+ssh-keygen -t ed25519 -C "ec2-github"
+cat ~/.ssh/id_ed25519.pub
+```
+Generate SSH keypair on EC2
+1. Go to GitHub → Settings → SSH and GPG keys
+2. Click New SSH key
+3. Paste your EC2 public key.
+
+```bash
 cd /opt
 python3 -m venv chatbot-venv
 source chatbot-venv/bin/activate
@@ -197,7 +213,7 @@ source chatbot-venv/bin/activate
 # As chatbot user
 cd /opt/chatbot-workshop
 git clone <REPO_URL> .
-pip install -r requirements.txt
+uv pip install -r requirements.txt
 cp .env.example .env   # then edit .env with S3_BUCKET_NAME, etc.
 ```
 
@@ -213,7 +229,7 @@ User=chatbot
 Group=chatbot
 WorkingDirectory=/opt/chatbot-workshop
 EnvironmentFile=/opt/chatbot-workshop/.env
-ExecStart=/opt/chatbot-venv/bin/uvicorn app.main:app --host 0.0.0.0 --port 8000
+ExecStart=/opt/chatbot-venv/bin/uvicorn app.main:app --host 0.0.0.0 --port 8080
 Restart=always
 RestartSec=5
 
@@ -251,6 +267,7 @@ Environment variables (`.env`):
 S3_BUCKET_NAME=your-chatbot-logs-bucket
 MODEL_ID=TinyLlama/TinyLlama-1.1B-Chat-v1.0
 APP_VERSION=workshop-1
+HF_TOKEN=
 ```
 
 The EC2 instance must have an IAM role with `s3:PutObject` to that bucket.

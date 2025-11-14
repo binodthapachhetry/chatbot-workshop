@@ -5,6 +5,7 @@ from fastapi import FastAPI
 from fastapi.responses import FileResponse, HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
+from typing import Optional
 
 from dotenv import load_dotenv
 load_dotenv()
@@ -20,8 +21,7 @@ app.mount("/static", StaticFiles(directory="frontend"), name="static")
 
 class ChatRequest(BaseModel):
     message: str
-    session_id: str | None = None
-
+    session_id: Optional[str] = None
 
 class ChatResponse(BaseModel):
     response: str

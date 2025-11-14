@@ -2,6 +2,7 @@ import os
 import json
 import uuid
 import datetime as dt
+from typing import Optional
 
 import boto3
 
@@ -17,7 +18,9 @@ def log_interaction(
     session_id: str,
     user_message: str,
     bot_response: str,
-    meta: dict | None = None,
+    # meta: dict | None = None,
+    meta: Optional[dict] = None
+
 ) -> None:
     """
     Logs each interaction as a separate JSON object in S3.
