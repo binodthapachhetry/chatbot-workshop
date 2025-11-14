@@ -277,7 +277,6 @@ The EC2 instance must have an IAM role with `s3:PutObject` to that bucket.
 ## Next Steps / Extensions
 
 - Swap to a different open-source chat model  
-- Add `/health` endpoint and CI smoke test  
 - Introduce CloudWatch Agent for richer logs/metrics  
 - Refactor into separate frontend/backend repos + CloudFront  
 - Wrap infra in Terraform for reproducible environments
