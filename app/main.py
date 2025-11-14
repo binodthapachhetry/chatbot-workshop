@@ -5,8 +5,8 @@ from fastapi import FastAPI
 from fastapi.responses import FileResponse, HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
+
 from dotenv import load_dotenv
-# Load environment variables from .env file
 load_dotenv()
 
 from app.inference import generate_reply
